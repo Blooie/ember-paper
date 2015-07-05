@@ -22,6 +22,7 @@ Router.map(function() {
   this.route('icons');
   this.route('slider');
   this.route('chips');
+  this.route('dialog');
 });
 
 export default Router;
