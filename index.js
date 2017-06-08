@@ -30,11 +30,9 @@ module.exports = {
       } while (current.parent.parent && (current = current.parent));
     }
 
-    if (!process.env.EMBER_CLI_FASTBOOT) {
-      app.import('vendor/hammerjs/hammer.js');
-      app.import('vendor/matchmedia-polyfill/matchMedia.js');
-      app.import('vendor/propagating-hammerjs/propagating.js');
-    }
+    app.import('vendor/hammerjs/hammer.js');
+    app.import('vendor/matchmedia-polyfill/matchMedia.js');
+    app.import('vendor/propagating-hammerjs/propagating.js');
   },
 
   config(env, baseConfig) {
@@ -64,21 +62,25 @@ module.exports = {
   treeForVendor: function(tree) {
     var trees = [];
 
-    if (!process.env.EMBER_CLI_FASTBOOT) {
-      var hammerJs = new Funnel(this.pathBase('hammerjs'), {
-        files: [ 'hammer.js' ],
-        destDir: 'hammerjs'
-      });
-      var matchMediaPolyfill = new Funnel(this.pathBase('matchmedia-polyfill'), {
-        files: [ 'matchMedia.js' ],
-        destDir: 'matchmedia-polyfill'
-      });
-      var propagatingHammerJs = new Funnel(this.pathBase('propagating-hammerjs'), {
-        files: [ 'propagating.js' ],
-        destDir: 'propagating-hammerjs'
-      });
-      trees = trees.concat([hammerJs, matchMediaPolyfill, propagatingHammerJs]);
-    }
+    var hammerJs = new Funnel(this.pathBase('hammerjs'), {
+      files: [ 'hammer.js' ],
+      destDir: 'hammerjs'
+    });
+    hammerJs = map(hammerJs, (content) => `if (typeof FastBoot === 'undefined') { ${content} }`);
+
+    var matchMediaPolyfill = new Funnel(this.pathBase('matchmedia-polyfill'), {
+      files: [ 'matchMedia.js' ],
+      destDir: 'matchmedia-polyfill'
+    });
+    matchMediaPolyfill = map(matchMediaPolyfill, (content) => `if (typeof FastBoot === 'undefined') { ${content} }`);
+
+    var propagatingHammerJs = new Funnel(this.pathBase('propagating-hammerjs'), {
+      files: [ 'propagating.js' ],
+      destDir: 'propagating-hammerjs'
+    });
+    propagatingHammerJs = map(propagatingHammerJs, (content) => `if (typeof FastBoot === 'undefined') { ${content} }`);
+
+    trees = trees.concat([hammerJs, matchMediaPolyfill, propagatingHammerJs]);
 
     if (tree) {
       trees.push(tree);
