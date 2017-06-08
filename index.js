@@ -8,6 +8,7 @@ var autoprefixer = require('broccoli-autoprefixer');
 var mergeTrees = require('broccoli-merge-trees');
 var Funnel = require('broccoli-funnel');
 var AngularScssFilter = require('./lib/angular-scss-filter');
+var map = require('broccoli-stew').map;
 
 module.exports = {
   name: 'ember-paper',
